@@ -1,50 +1,58 @@
-def parse():
-    with open("teste.txt", "r") as f:
-        texto = f.read()
-    global tokens
-    tokens = texto.split()
-
-nums = []
+opDisponiveis = ['+','-','*','/']
+tokens = []
+buff = []
+nsrc = []
 op = []
-opOr = ['+', '-', '/', '*'] 
+nums = []
 comandos = []
-def separarTokens():
-    for i in range(len(tokens)):
-        global tks
-        tks = list(tokens[i], tokens[i+1], tokens[i+2])
+
+with open("teste.txt", "r") as f:
+    src = f.read()
+src = src.split()
+
+for tk in src:
+    if len(tk) > 1 and not tk.isdigit():
+        tk = list(tk)
+        for i in range(len(tk)):
+            nsrc.append(tk[i])
+    else:
+        nsrc.append(tk)
+
+def parse(): 
+    for tk in nsrc:
+        if tk != ';':
+            buff.append(tk) 
+        else:
+            tokens.append(buff[:])
+            buff.clear()
+
 def tokenize():
-    global comandos
     comandos.append(f"print(")
-    for i in range(len(tokens)):
-        print(i)
-        while len(nums) < 2 or len(op) < 1:
-            if len(op) > 1 or len(nums) > 2 or i >= len(tokens):
-                raise Exception
-            if tokens[i].isdigit():
-                nums.append(tokens[i])
-                i+=1
-                print("loop1")
-            elif tokens[i] in opOr:
-                op.append(tokens[i])
-                i+=1
-                print("loop2")
+    for token in tokens:
+        for tk in token:
+            if tk.isdigit():
+               nums.append(tk) 
+            elif tk in opDisponiveis:
+                op.append(tk)
+            else:
+                raise Exception("Sintáxe Inválida")
         comandos.append(nums[0])
         comandos.append(op[0])
         comandos.append(nums[1])
-        comandos.append(", ")
-        print(comandos)
-
+        comandos.append(",")
         op.clear()
         nums.clear()
-        print(op,nums)
-    comandos.append(f")\n")
-        
+
+    comandos.append(f")\n")  
 
 def executar():
     cmd =  "".join(comandos)
     exec(cmd)
-# tokenize()
-# executar()
-parse()
-separarTokens()
-print(tks)
+
+def main():
+    parse()
+    tokenize()
+    executar()
+
+if __name__ == "__main__":
+    main()
