@@ -36,9 +36,10 @@ def tokenize():
                 op.append(tk)
             else:
                 raise Exception("Sintáxe Inválida")
-        comandos.append(nums[0])
-        comandos.append(op[0])
-        comandos.append(nums[1])
+        for i in range(len(op)):
+            comandos.append(nums[i])
+            comandos.append(op[i])
+        comandos.append(nums[-1])
         comandos.append(",")
         op.clear()
         nums.clear()
